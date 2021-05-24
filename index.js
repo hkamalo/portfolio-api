@@ -126,23 +126,23 @@ app.post('/contact', (req, res) => {
                 <p>${createdContact.message}<p></p>
                 ---------------------------`;
 
-// ------------Create a SMTP transporter object----------------------//
+                // ------------Create a SMTP transporter object----------------------//
 
-const transporter = nodemailer.createTransport({
-  host: process.env.SMTP_HOST,
-  port: process.env.SMTP_PORT,
-  secure: true,
-  auth: {
-    user: process.env.SMTP_USER,
-    pass: process.env.SMTP_PASSWORD,
-  },
-});
+                const transporter = nodemailer.createTransport({
+                  host: process.env.SMTP_HOST,
+                  port: process.env.SMTP_PORT,
+                  secure: true,
+                  auth: {
+                    user: process.env.SMTP_USER,
+                    pass: process.env.SMTP_PASSWORD,
+                  },
+                });
 
-const replyMessage = {
-  from: `kamalo.pro@gmail.com`,
-  bcc: `${createdContact.email}, kamalo.pro@gmail.com`,
-  subject: 'Confirmation de réception',
-  text: `Bonjour ${createdContact.firstname}
+                const replyMessage = {
+                  from: `kamalo.pro@gmail.com`,
+                  bcc: `${createdContact.email}, kamalo.pro@gmail.com`,
+                  subject: 'Confirmation de réception',
+                  text: `Bonjour ${createdContact.firstname}
                 Merci pour votre message, je reviendrais vers vous au plus vite.
                 Bien cordialement,
                 H. Kamalo
@@ -152,18 +152,18 @@ const replyMessage = {
                 Message :
                 ${createdContact.message}
                 ---------------------------`,
-  html: htmlOutput,
-};
+                  html: htmlOutput,
+                };
 
-transporter.sendMail(replyMessage, (err, info) => {
-  if (err) {
-    console.log(`Error occurred. ${err.replyMessage}`);
-    res.sendStatus(500);
-  } else {
-    console.log('Message sent: %s', info.replyMessageId);
-    res.sendStatus(200);
-  }
-});
+                transporter.sendMail(replyMessage, (err, info) => {
+                  if (err) {
+                    console.log(`Error occurred. ${err.replyMessage}`);
+                    res.sendStatus(500);
+                  } else {
+                    console.log('Message sent: %s', info.replyMessageId);
+                    res.sendStatus(200);
+                  }
+                });
                 res.status(201).json(createdContact);
               }
             }
