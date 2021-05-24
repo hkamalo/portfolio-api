@@ -1,0 +1,9 @@
+{
+  "name": "porfolio_back",
+  "version": "1.0.0",
+  "description": "necessary apis for my portfolio",
+  "main": "index.js",
+  "repository": "https://github.com/hkamalo/portfolio-api.git",
+  "author": "Heranca <heranca.kamalo@gmail.com>",
+  "license": "MIT"
+}
