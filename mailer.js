@@ -1,19 +1,19 @@
-require('dotenv').config();
+// require('dotenv').config();
 
-const nodemailer = require('nodemailer');
+// const nodemailer = require('nodemailer');
 
-const transporter = nodemailer.createTransport({
-  host: process.env.SMTP_HOST,
+// const transporter = nodemailer.createTransport({
+//   host: process.env.SMTP_HOST,
 
-  port: process.env.SMTP_PORT,
+//   port: process.env.SMTP_PORT,
 
-  secure: true,
+//   secure: true,
 
-  auth: {
-    user: process.env.SMTP_USER,
+//   auth: {
+//     user: process.env.SMTP_USER,
 
-    pass: process.env.SMTP_PASSWORD,
-  },
-});
+//     pass: process.env.SMTP_PASSWORD,
+//   },
+// });
 
-module.exports = transporter;
+// module.exports = transporter;
