@@ -29,8 +29,8 @@ const mailer = (createdContact) => {
   });
 
   const replyMessage = {
-    from: `kamalo.pro@gmail.com`,
-    bcc: `${createdContact.email}, kamalo.pro@gmail.com`,
+    from: `${process.env.MY_EMAIL_ADDRESS}`,
+    bcc: `${createdContact.email}, ${process.env.MY_EMAIL_ADDRESS}`,
     subject: 'Confirmation de réception',
     text: `Bonjour ${createdContact.firstname}
                   Merci pour votre message, je reviendrais vers vous au plus vite.
