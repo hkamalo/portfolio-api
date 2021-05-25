@@ -7,7 +7,7 @@ const cors = require('cors');
 const nodemailer = require('nodemailer');
 const connection = require('./db-config');
 require('dotenv').config();
-const { PORT, CORS_ALLOWED_ORIGINS, inTestEnv } = require('./env');
+const { PORT, CORS_ALLOWED_ORIGINS, inTestEnv, MY_EMAIL_ADDRESS } = require('./env');
 
 const app = express();
 app.use(express.json());
@@ -131,8 +131,8 @@ app.post('/contact', (req, res) => {
     });
 
     const replyMessage = {
-      from: `kamalo.pro@gmail.com`,
-      to: `${email}, kamalo.pro@gmail.com`,
+      from: `${MY_EMAIL_ADDRESS}`,
+      to: `${email}, ${MY_EMAIL_ADDRESS}`,
       subject: 'Confirmation de réception',
       text: `Bonjour ${firstname}
                 Merci pour votre message, je reviendrais vers vous au plus vite.
