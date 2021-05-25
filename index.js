@@ -115,6 +115,7 @@ app.post('/contact', (req, res) => {
                   message,
                 };
                 const htmlOutput = `
+                <body>
                 <p>Bonjour ${createdContact.firstname}</p>
                 <p>Merci pour votre message, je reviendrais vers vous au plus vite.</p>
                 <p>Bien cordialement,</p> 
@@ -124,11 +125,12 @@ app.post('/contact', (req, res) => {
                 <p>${createdContact.email}</p>
                 <h3>Message :</h3>
                 <p>${createdContact.message}<p></p>
-                ---------------------------`;
+                ---------------------------
+                </body>`;
 
                 // ------------Create a SMTP transporter object----------------------//
 
-                const transporter = nodemailer.createTransport({
+                const emailer = nodemailer.createTransport({
                   host: process.env.SMTP_HOST,
                   port: process.env.SMTP_PORT,
                   secure: true,
@@ -140,7 +142,7 @@ app.post('/contact', (req, res) => {
 
                 const replyMessage = {
                   from: `kamalo.pro@gmail.com`,
-                  bcc: `${createdContact.email}, kamalo.pro@gmail.com`,
+                  to: `${createdContact.email}, kamalo.pro@gmail.com`,
                   subject: 'Confirmation de réception',
                   text: `Bonjour ${createdContact.firstname}
                 Merci pour votre message, je reviendrais vers vous au plus vite.
@@ -152,17 +154,12 @@ app.post('/contact', (req, res) => {
                 Message :
                 ${createdContact.message}
                 ---------------------------`,
-                  html: htmlOutput,
+                  html:`${htmlOutput}`,
                 };
 
-                transporter.sendMail(replyMessage, (err, info) => {
-                  if (err) {
-                    console.log(`Error occurred. ${err.replyMessage}`);
-                    res.sendStatus(500);
-                  } else {
-                    console.log('Message sent: %s', info.replyMessageId);
-                    res.sendStatus(200);
-                  }
+                emailer.sendMail({ replyMessage }, (err, info) => {
+                  if (err) console.error(err);
+                  else console.log(info);
                 });
                 res.status(201).json(createdContact);
               }

@@ -30,13 +30,12 @@
     "husky": "^4.3.0",
     "postcss": "^7",
     "prettier": "^2.1.2",
-    "prop-types": "^15.7.2",
-    "react-transition-group": "^4.4.1",
     "typescript": "^4.1.2",
     "nodemon": "^2.0.7"
   },
   "scripts": {
     "start": "nodemon index.js",
+    "start:watch": "nodemon index.js",
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
     "format": "prettier --write \"**/*.+(js|jsx|json|yml|yaml|css|md|vue)\""
