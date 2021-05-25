@@ -69,7 +69,23 @@ process.on('beforeExit', () => {
 app.post('/contact', (req, res) => {
   const { company, firstname, lastname, email, message } = req.body;
 
-  // ------Check if the contact is already create-------- //
+  // ------Check data are good-------- //
+  const { error } = Joi.object({
+    company: Joi.string().min(2).max(255).required(),
+    firstname: Joi.string().min(2).max(100).required(),
+    lastname: Joi.string().min(2).max(100).required(),
+    message: Joi.string().min(2).required(),
+    email: Joi.string().email().min(2).max(255).required(),
+  }).validate(
+    { company, firstname, lastname, email, message },
+    { abortEarly: false }
+  );
+
+  // ------Check if the data are already in the DB-------- //
+
+  if (error) {
+    res.status(422).json({ validationErrors: error.details });
+  } else {
   connection.query(
     'SELECT * FROM contact WHERE email = ? AND company = ?',
     [email, company],
@@ -81,50 +97,22 @@ app.post('/contact', (req, res) => {
             'Vous avez déjà pris contact, je reviendrais vers vous au plus vite',
         });
       } else {
-        const { error } = Joi.object({
-          company: Joi.string().min(2).max(255).required(),
-          firstname: Joi.string().min(2).max(100).required(),
-          lastname: Joi.string().min(2).max(100).required(),
-          message: Joi.string().min(2).required(),
-          email: Joi.string().email().min(2).max(255).required(),
-        }).validate(
-          { company, firstname, lastname, email, message },
-          { abortEarly: false }
-        );
-
-        // ------Set the contact in the DB-------- //
-
-        if (error) {
-          res.status(422).json({ validationErrors: error.details });
-        } else {
           connection.query(
             'INSERT INTO contact (company, firstname, lastname, email, message) VALUES (?, ?, ?, ?, ?)',
-            [company, firstname, lastname, email, message],
-            (err, result) => {
-              if (err) {
-                console.error(err);
-                res.status(500).send('Error saving the contact');
-              } else {
-                const id = result.insertId;
-                const createdContact = {
-                  id,
-                  company,
-                  firstname,
-                  lastname,
-                  email,
-                  message,
-                };
+            [company, firstname, lastname, email, message]
+            )
+          }});
                 const htmlOutput = `
                 <body>
-                <p>Bonjour ${createdContact.firstname}</p>
+                <p>Bonjour ${firstname}</p>
                 <p>Merci pour votre message, je reviendrais vers vous au plus vite.</p>
                 <p>Bien cordialement,</p> 
                 <h4>H. Kamalo</h4>
                 ---------------------------   
-                <h4>Réponse à : ${createdContact.firstname} ${createdContact.lastname}</h4>
-                <p>${createdContact.email}</p>
+                <h4>Réponse à : ${firstname} ${lastname}</h4>
+                <p>${email}</p>
                 <h3>Message :</h3>
-                <p>${createdContact.message}<p></p>
+                <p>${message}<p></p>
                 ---------------------------
                 </body>`;
 
@@ -142,31 +130,24 @@ app.post('/contact', (req, res) => {
 
                 const replyMessage = {
                   from: `kamalo.pro@gmail.com`,
-                  to: `${createdContact.email}, kamalo.pro@gmail.com`,
+                  to: `${email}, kamalo.pro@gmail.com`,
                   subject: 'Confirmation de réception',
-                  text: `Bonjour ${createdContact.firstname}
+                  text: `Bonjour ${firstname}
                 Merci pour votre message, je reviendrais vers vous au plus vite.
                 Bien cordialement,
                 H. Kamalo
                 ---------------------------   
-                Réponse à : ${createdContact.firstname} ${createdContact.lastname}
-                ${createdContact.email}
+                Réponse à : ${firstname} ${lastname}
+                ${email}
                 Message :
-                ${createdContact.message}
+                ${message}
                 ---------------------------`,
-                  html:`${htmlOutput}`,
+                  html: `${htmlOutput}`,
                 };
 
                 emailer.sendMail({ replyMessage }, (err, info) => {
                   if (err) console.error(err);
                   else console.log(info);
                 });
-                res.status(201).json(createdContact);
-              }
-            }
-          );
-        }
-      }
-    }
-  );
-});
+              };
+            });
