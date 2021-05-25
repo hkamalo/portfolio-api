@@ -86,23 +86,25 @@ app.post('/contact', (req, res) => {
   if (error) {
     res.status(422).json({ validationErrors: error.details });
   } else {
-  connection.query(
-    'SELECT * FROM contact WHERE email = ? AND company = ?',
-    [email, company],
-    (err, result) => {
-      if (result[0]) {
-        console.error(err);
-        res.status(409).json({
-          messageErr:
-            'Vous avez déjà pris contact, je reviendrais vers vous au plus vite',
-        });
-      } else {
+    connection.query(
+      'SELECT * FROM contact WHERE email = ? AND company = ?',
+      [email, company],
+      (err, result) => {
+        if (result[0]) {
+          console.error(err);
+          res.status(409).json({
+            messageErr:
+              'Vous avez déjà pris contact, je reviendrais vers vous au plus vite',
+          });
+        } else {
           connection.query(
             'INSERT INTO contact (company, firstname, lastname, email, message) VALUES (?, ?, ?, ?, ?)',
             [company, firstname, lastname, email, message]
-            )
-          }});
-                const htmlOutput = `
+          );
+        }
+      }
+    );
+    const htmlOutput = `
                 <body>
                 <p>Bonjour ${firstname}</p>
                 <p>Merci pour votre message, je reviendrais vers vous au plus vite.</p>
@@ -116,23 +118,23 @@ app.post('/contact', (req, res) => {
                 ---------------------------
                 </body>`;
 
-                // ------------Create a SMTP transporter object----------------------//
+    // ------------Create a SMTP transporter object----------------------//
 
-                const emailer = nodemailer.createTransport({
-                  host: process.env.SMTP_HOST,
-                  port: process.env.SMTP_PORT,
-                  secure: true,
-                  auth: {
-                    user: process.env.SMTP_USER,
-                    pass: process.env.SMTP_PASSWORD,
-                  },
-                });
+    const emailer = nodemailer.createTransport({
+      host: process.env.SMTP_HOST,
+      port: process.env.SMTP_PORT,
+      secure: true,
+      auth: {
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASSWORD,
+      },
+    });
 
-                const replyMessage = {
-                  from: `kamalo.pro@gmail.com`,
-                  to: `${email}, kamalo.pro@gmail.com`,
-                  subject: 'Confirmation de réception',
-                  text: `Bonjour ${firstname}
+    const replyMessage = {
+      from: `kamalo.pro@gmail.com`,
+      to: `${email}, kamalo.pro@gmail.com`,
+      subject: 'Confirmation de réception',
+      text: `Bonjour ${firstname}
                 Merci pour votre message, je reviendrais vers vous au plus vite.
                 Bien cordialement,
                 H. Kamalo
@@ -142,12 +144,12 @@ app.post('/contact', (req, res) => {
                 Message :
                 ${message}
                 ---------------------------`,
-                  html: `${htmlOutput}`,
-                };
+      html: `${htmlOutput}`,
+    };
 
-                emailer.sendMail({ replyMessage }, (err, info) => {
-                  if (err) console.error(err);
-                  else console.log(info);
-                });
-              };
-            });
+    emailer.sendMail({ replyMessage }, (err, info) => {
+      if (err) console.error(err);
+      else console.log(info);
+    });
+  }
+});
