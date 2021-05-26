@@ -107,7 +107,7 @@ app.post('/contact', (req, res) => {
   } else {
     const SibApiV3Sdk = require('sib-api-v3-sdk');
     const defaultClient = SibApiV3Sdk.ApiClient.instance;
-    const apikey = EMAIL_API_V3_KEY
+    const apikey = EMAIL_API_V3_KEY;
     const apiKey = defaultClient.authentications['api-key'];
     apiKey.apiKey = apikey;
 
@@ -115,7 +115,7 @@ app.post('/contact', (req, res) => {
 
     const createContact = new SibApiV3Sdk.CreateContact();
     createContact.email = email;
-    createContact.listId = [2]
+    createContact.listId = [2];
 
     apiInstance.createContact(createContact).then(
       (data) => {
