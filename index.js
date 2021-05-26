@@ -1,3 +1,6 @@
+/* eslint-disable global-require */
+/* eslint-disable import/order */
+/* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable no-console */
 /* eslint-disable no-shadow */
 /* eslint-disable no-unused-vars */
@@ -12,6 +15,7 @@ const {
   CORS_ALLOWED_ORIGINS,
   inTestEnv,
   MY_EMAIL_ADDRESS,
+  EMAIL_API_V3_KEY,
 } = require('./env');
 
 const app = express();
@@ -53,6 +57,16 @@ app.listen(PORT, () => {
   }
 });
 
+// ----------------Create a campaign\
+// const SibApiV3Sdk = require('sib-api-v3-sdk');
+
+// const defaultClient = SibApiV3Sdk.ApiClient.instance;
+
+// // -----Instantiate the client---//
+// const apiKey = defaultClient.authentications['api-key'];
+// apiKey.apiKey = EMAIL_API_V3_KEY;
+// const apiInstance = new SibApiV3Sdk.EmailCampaignsApi();
+
 // ------process setup : improves error reporting-------- //
 
 process.on('unhandledRejection', (error) => {
@@ -86,11 +100,33 @@ app.post('/contact', (req, res) => {
     { abortEarly: false }
   );
 
-  // ------Check if the data are already in the DB-------- //
+  // ------Check if the data are already in the DB beforre insert-------- //
 
   if (error) {
     res.status(422).json({ validationErrors: error.details });
   } else {
+    const SibApiV3Sdk = require('sib-api-v3-sdk');
+    const defaultClient = SibApiV3Sdk.ApiClient.instance;
+    const apikey = EMAIL_API_V3_KEY
+    const apiKey = defaultClient.authentications['api-key'];
+    apiKey.apiKey = apikey;
+
+    const apiInstance = new SibApiV3Sdk.ContactsApi();
+
+    const createContact = new SibApiV3Sdk.CreateContact();
+    createContact.email = email;
+    createContact.listId = [2]
+
+    apiInstance.createContact(createContact).then(
+      (data) => {
+        res.status(200);
+        res.send('ok');
+      },
+      (error) => {
+        res.status(500);
+        res.send('fail');
+      }
+    );
     connection.query(
       'SELECT * FROM contact WHERE email = ? AND company = ?',
       [email, company],
@@ -109,52 +145,75 @@ app.post('/contact', (req, res) => {
         }
       }
     );
-    const htmlOutput = `
-                <body>
-                <p>Bonjour ${firstname}</p>
-                <p>Merci pour votre message, je reviendrais vers vous au plus vite.</p>
-                <p>Bien cordialement,</p> 
-                <h4>H. Kamalo</h4>
-                ---------------------------   
-                <h4>Réponse à : ${firstname} ${lastname}</h4>
-                <p>${email}</p>
-                <h3>Message :</h3>
-                <p>${message}<p></p>
-                ---------------------------
-                </body>`;
+    // // ---Make the call to the client\
+    // const emailCampaigns = new SibApiV3Sdk.CreateEmailCampaign({
+    //   name: 'Campaign sent via the API',
+    //   subject: 'My subject',
+    //   sender: { "name": 'De H. Kamalo', "email": "heranca.kamalo@gmail.com" },
+    //   type: 'classic',
+
+    //   // -----Content that will be sent\
+    //   htmlContent: `Bonjour ${firstname}
+    // Merci pour votre message, je reviendrais vers vous au plus vite.
+    // Bien cordialement,
+    // H. Kamalo
+    // ---------------------------
+    // Réponse à : ${firstname} ${lastname}
+    // ${email}
+    // Message :
+    // ${message}
+    // ---------------------------`,
+
+    //   // -----Select the recipients\
+    //   recipients: {
+    //     listIds: [2, 7],
+    //   },
+    // });
+
+    // apiInstance.createEmailCampaign(emailCampaigns).then(
+    //   (data) => {
+    //     console.log(`API called successfully. Returned data: ${data}`);
+    //   },
+    //   (error) => {
+    //     console.error(error);
+    //   }
+    // );
 
     // ------------Create a SMTP transporter object----------------------//
 
-    const emailer = nodemailer.createTransport({
-      host: process.env.SMTP_HOST,
-      port: process.env.SMTP_PORT,
-      secure: true,
-      auth: {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASSWORD,
-      },
-    });
+    // const emailer = nodemailer.createTransport({
+    //   host: process.env.SMTP_HOST,
+    //   port: process.env.SMTP_PORT,
+    //   secure: true,
+    //   auth: {
+    //     user: process.env.SMTP_USER,
+    //     pass: process.env.SMTP_PASSWORD,
+    //   },
+    //   tls: {
+    //     ciphers: 'SSLv3',
+    //   },
+    // });
 
-    const replyMessage = {
-      from: `${MY_EMAIL_ADDRESS}`,
-      to: `${email}, ${MY_EMAIL_ADDRESS}`,
-      subject: 'Confirmation de réception',
-      text: `Bonjour ${firstname}
-                Merci pour votre message, je reviendrais vers vous au plus vite.
-                Bien cordialement,
-                H. Kamalo
-                ---------------------------   
-                Réponse à : ${firstname} ${lastname}
-                ${email}
-                Message :
-                ${message}
-                ---------------------------`,
-      html: `${htmlOutput}`,
-    };
+    // const replyMessage = {
+    //   from: `${MY_EMAIL_ADDRESS}`,
+    //   to: `${email}, ${MY_EMAIL_ADDRESS}`,
+    //   subject: 'Confirmation de réception',
+    //   text: `Bonjour ${firstname}
+    //             Merci pour votre message, je reviendrais vers vous au plus vite.
+    //             Bien cordialement,
+    //             H. Kamalo
+    //             ---------------------------
+    //             Réponse à : ${firstname} ${lastname}
+    //             ${email}
+    //             Message :
+    //             ${message}
+    //             ---------------------------`,
+    //   html: `${htmlOutput}`,
+    // };
 
-    emailer.sendMail({ replyMessage }, (err, info) => {
-      if (err) console.error(err);
-      else console.log(info);
-    });
+    // emailer.sendMail({ replyMessage }, (err, info) => {
+    //   if (err) console.error(err);
+    //   else console.log(info);
+    // });
   }
 });
