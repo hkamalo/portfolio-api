@@ -13,9 +13,7 @@ require('dotenv').config();
 const {
   PORT,
   CORS_ALLOWED_ORIGINS,
-  inTestEnv,
-  MY_EMAIL_ADDRESS,
-  EMAIL_API_V3_KEY,
+  inTestEnv, 
 } = require('./env');
 
 const app = express();
@@ -107,7 +105,7 @@ app.post('/contact', (req, res) => {
   } else {
     const SibApiV3Sdk = require('sib-api-v3-sdk');
     const defaultClient = SibApiV3Sdk.ApiClient.instance;
-    const apikey = EMAIL_API_V3_KEY;
+    const apikey = process.env.EMAIL_API_V3_KEY;
     const apiKey = defaultClient.authentications['api-key'];
     apiKey.apiKey = apikey;
 
