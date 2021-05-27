@@ -10,11 +10,7 @@ const cors = require('cors');
 const nodemailer = require('nodemailer');
 const connection = require('./db-config');
 require('dotenv').config();
-const {
-  PORT,
-  CORS_ALLOWED_ORIGINS,
-  inTestEnv, 
-} = require('./env');
+const { PORT, CORS_ALLOWED_ORIGINS, inTestEnv } = require('./env');
 
 const app = express();
 app.use(express.json());
