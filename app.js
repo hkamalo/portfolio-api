@@ -11,7 +11,7 @@ const nodemailer = require('nodemailer');
 const connection = require('./db-config');
 const helmet = require('helmet');
 require('dotenv').config();
-const { PORT, CORS_ALLOWED_ORIGINS, inProdEnv } = require('./env');
+const { PORT, CORS_ALLOWED_ORIGINS, inTestEnv } = require('./env');
 const mailchimpClient = require('@mailchimp/mailchimp_transactional')(
   process.env.MAIL_CHIMP_API_KEY
 );
@@ -51,7 +51,7 @@ app.use(cors(corsOptions));
 
 // ------Server setup--------- //
 app.listen(PORT, () => {
-  if (!inProdEnv) {
+  if (!inTestEnv) {
     console.log(`Server running on port ${PORT}`);
   }
 });
