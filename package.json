@@ -2,7 +2,8 @@
   "name": "porfolio_back",
   "version": "1.0.0",
   "engines": {
-    "node": "12.21.0"
+    "node": "12.21.0",
+    "yarn": "1.22.10"
   },
   "private": true,
   "description": "necessary api for my portfolio",
