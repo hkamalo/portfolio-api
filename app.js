@@ -52,8 +52,8 @@ app.use(cors(corsOptions));
 // ------Server setup--------- //
 const port = process.env.PORT || 5001;
 app.listen(port, () => {
-    console.log(`Server running on port ${port}`);
-  });
+  console.log(`Server running on port ${port}`);
+});
 
 process.on('unhandledRejection', (error) => {
   console.error('unhandledRejection', JSON.stringify(error), error.stack);
