@@ -142,13 +142,13 @@ app.post('/contact', (req, res) => {
       text: `Message laissé par : ${firstname} ${lastname}, de l'entreprise : ${company}, email: ${email}, ${message}`,
       html: `
       <div>
-      <h4>Prénom: </h4><p>${firstname}</p>
-      <h4>Nom: </h4> <p>${lastname}</p>
-      <h4>Entreprise: </h4> <p>${company}</p>
-      <h4>Email: </h4> <p>${email}</p>
+      <p><strong>Entreprise: </strong>${company}</p>
+      <p><strong>Prénom: </strong>${firstname}</p>
+      <p><strong>Nom: </strong>${lastname}</p>
+      <p><strong>Email: </strong>${email}</p>
       </div>
       <div>
-      <h4>Message: </h4> <p>${message}</p>
+      <p><strong>Message: </strong>${message}</p>
       </div>
       `,
     };
