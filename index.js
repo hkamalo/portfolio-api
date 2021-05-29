@@ -11,6 +11,9 @@ const nodemailer = require('nodemailer');
 const connection = require('./db-config');
 require('dotenv').config();
 const { PORT, CORS_ALLOWED_ORIGINS, inTestEnv } = require('./env');
+const mailchimpClient = require('@mailchimp/mailchimp_transactional')(
+  process.env.MAIL_CHIMP_API_KEY
+);
 
 const app = express();
 app.use(express.json());
@@ -51,17 +54,6 @@ app.listen(PORT, () => {
   }
 });
 
-// ----------------Create a campaign\
-// const SibApiV3Sdk = require('sib-api-v3-sdk');
-
-// const defaultClient = SibApiV3Sdk.ApiClient.instance;
-
-// // -----Instantiate the client---//
-// const apiKey = defaultClient.authentications['api-key'];
-// apiKey.apiKey = EMAIL_API_V3_KEY;
-// const apiInstance = new SibApiV3Sdk.EmailCampaignsApi();
-
-// ------process setup : improves error reporting-------- //
 
 process.on('unhandledRejection', (error) => {
   console.error('unhandledRejection', JSON.stringify(error), error.stack);
@@ -99,115 +91,69 @@ app.post('/contact', (req, res) => {
   if (error) {
     res.status(422).json({ validationErrors: error.details });
   } else {
-    const SibApiV3Sdk = require('sib-api-v3-sdk');
-    const defaultClient = SibApiV3Sdk.ApiClient.instance;
-    const apikey = process.env.EMAIL_API_V3_KEY;
-    const apiKey = defaultClient.authentications['api-key'];
-    apiKey.apiKey = apikey;
+    const run = async () => {
+      const response = await mailchimpClient.messages.sendTemplate({
+        template_name: 'confirmation',
+        template_content: [
+          {
+            name: 'name',
+            content: `${firstname}`,
+          },
+        ],
+        message: {
+          subject: 'Confirmation de reception',
+          from_email: `${process.env.MY_EMAIL_ADDRESS}`,
+          to: [
+            {
+              email: 'contact.pro@hkamalo.com',
+              type: 'to',
+            },
+          ],
+          global_merge_vars: [
+            {
+              name: 'fname',
+              content: `${firstname}`,
+            },
+          ],
 
-    const apiInstance = new SibApiV3Sdk.ContactsApi();
+          signing_domain: 'www.hkamalo.com',
+        },
+      });
+      console.log(response);
+    };
 
-    const createContact = new SibApiV3Sdk.CreateContact();
-    createContact.email = email;
-    createContact.listId = [2];
-
-    apiInstance.createContact(createContact).then(
-      (data) => {
-        res.status(200);
-        res.send('ok');
-      },
-      (error) => {
-        res.status(500);
-        res.send('fail');
-      }
-    );
-    connection.query(
-      'SELECT * FROM contact WHERE email = ? AND company = ?',
-      [email, company],
-      (err, result) => {
-        if (result[0]) {
-          console.error(err);
-          res.status(409).json({
-            messageErr:
-              'Vous avez déjà pris contact, je reviendrais vers vous au plus vite',
-          });
-        } else {
-          connection.query(
-            'INSERT INTO contact (company, firstname, lastname, email, message) VALUES (?, ?, ?, ?, ?)',
-            [company, firstname, lastname, email, message]
-          );
-        }
-      }
-    );
-    // // ---Make the call to the client\
-    // const emailCampaigns = new SibApiV3Sdk.CreateEmailCampaign({
-    //   name: 'Campaign sent via the API',
-    //   subject: 'My subject',
-    //   sender: { "name": 'De H. Kamalo', "email": "heranca.kamalo@gmail.com" },
-    //   type: 'classic',
-
-    //   // -----Content that will be sent\
-    //   htmlContent: `Bonjour ${firstname}
-    // Merci pour votre message, je reviendrais vers vous au plus vite.
-    // Bien cordialement,
-    // H. Kamalo
-    // ---------------------------
-    // Réponse à : ${firstname} ${lastname}
-    // ${email}
-    // Message :
-    // ${message}
-    // ---------------------------`,
-
-    //   // -----Select the recipients\
-    //   recipients: {
-    //     listIds: [2, 7],
-    //   },
-    // });
-
-    // apiInstance.createEmailCampaign(emailCampaigns).then(
-    //   (data) => {
-    //     console.log(`API called successfully. Returned data: ${data}`);
-    //   },
-    //   (error) => {
-    //     console.error(error);
-    //   }
-    // );
+    run();
 
     // ------------Create a SMTP transporter object----------------------//
 
-    // const emailer = nodemailer.createTransport({
-    //   host: process.env.SMTP_HOST,
-    //   port: process.env.SMTP_PORT,
-    //   secure: true,
-    //   auth: {
-    //     user: process.env.SMTP_USER,
-    //     pass: process.env.SMTP_PASSWORD,
-    //   },
-    //   tls: {
-    //     ciphers: 'SSLv3',
-    //   },
-    // });
+    const portfolioContactCopy = nodemailer.createTransport({
+      host: process.env.SMTP_HOST,
+      port: process.env.SMTP_PORT,
+      secure: true,
+      auth: {
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASSWORD,
+      },
+    });
 
-    // const replyMessage = {
-    //   from: `${MY_EMAIL_ADDRESS}`,
-    //   to: `${email}, ${MY_EMAIL_ADDRESS}`,
-    //   subject: 'Confirmation de réception',
-    //   text: `Bonjour ${firstname}
-    //             Merci pour votre message, je reviendrais vers vous au plus vite.
-    //             Bien cordialement,
-    //             H. Kamalo
-    //             ---------------------------
-    //             Réponse à : ${firstname} ${lastname}
-    //             ${email}
-    //             Message :
-    //             ${message}
-    //             ---------------------------`,
-    //   html: `${htmlOutput}`,
-    // };
+    const contactMessage = {
+      from: `${process.env.MY_EMAIL_ADDRESS}`,
+      to: `${process.env.MY_EMAIL_ADDRESS}`,
+      subject: 'Message portfolio',
+      text: `Message laissé par : ${firstname} ${lastname}, de l'entreprise : ${company}, email: ${email}, ${message}`,
+      html: `<p>Message laissé par : ${firstname} ${lastname} de l'entreprise : ${company}</p> 
+    <p>email: ${email}</p> 
+    <p>${message}</p>`,
+    };
 
-    // emailer.sendMail({ replyMessage }, (err, info) => {
-    //   if (err) console.error(err);
-    //   else console.log(info);
-    // });
+    portfolioContactCopy.sendMail(contactMessage, (err, info) => {
+      if (err) {
+        console.log(`Error occurred. ${err.contactMessage}`);
+        res.sendStatus(500);
+      } else {
+        console.log('Message sent: %s', info.contactMessageId);
+        res.sendStatus(200);
+      }
+    });
   }
 });
