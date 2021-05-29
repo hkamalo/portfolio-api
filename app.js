@@ -11,7 +11,7 @@ const nodemailer = require('nodemailer');
 const connection = require('./db-config');
 const helmet = require('helmet');
 require('dotenv').config();
-const { PORT, CORS_ALLOWED_ORIGINS, inTestEnv } = require('./env');
+const { CORS_ALLOWED_ORIGINS } = require('./env');
 const mailchimpClient = require('@mailchimp/mailchimp_transactional')(
   process.env.MAIL_CHIMP_API_KEY
 );
@@ -50,11 +50,10 @@ const corsOptions = {
 app.use(cors(corsOptions));
 
 // ------Server setup--------- //
-app.listen(PORT, () => {
-  if (!inTestEnv) {
-    console.log(`Server running on port ${PORT}`);
-  }
-});
+const port = process.env.PORT || 5001;
+app.listen(port, () => {
+    console.log(`Server running on port ${port}`);
+  });
 
 process.on('unhandledRejection', (error) => {
   console.error('unhandledRejection', JSON.stringify(error), error.stack);
