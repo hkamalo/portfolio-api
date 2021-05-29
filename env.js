@@ -14,7 +14,7 @@ const inProdEnv = getEnv('NODE_ENV') === 'production';
 const inDevEnv = getEnv('NODE_ENV') === 'development';
 const inTestEnv = getEnv('NODE_ENV') === 'test';
 
-const PORT = getEnv(`PORT${inTestEnv ? '_TEST' : ''}`);
+const PORT = getEnv(`PORT${inProdEnv ? '_PRODUCTION' : ''}`);
 const CORS_ALLOWED_ORIGINS = getEnv(`CORS_ALLOWED_ORIGINS`);
 
 module.exports = {

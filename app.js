@@ -9,14 +9,16 @@ const Joi = require('joi');
 const cors = require('cors');
 const nodemailer = require('nodemailer');
 const connection = require('./db-config');
+const helmet = require('helmet');
 require('dotenv').config();
-const { PORT, CORS_ALLOWED_ORIGINS, inTestEnv } = require('./env');
+const { PORT, CORS_ALLOWED_ORIGINS, inProdEnv } = require('./env');
 const mailchimpClient = require('@mailchimp/mailchimp_transactional')(
   process.env.MAIL_CHIMP_API_KEY
 );
 
 const app = express();
 app.use(express.json());
+app.use(helmet());
 
 // ------Handle DB connection error--------- //
 
@@ -49,7 +51,7 @@ app.use(cors(corsOptions));
 
 // ------Server setup--------- //
 app.listen(PORT, () => {
-  if (!inTestEnv) {
+  if (!inProdEnv) {
     console.log(`Server running on port ${PORT}`);
   }
 });
