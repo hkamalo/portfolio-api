@@ -5,7 +5,7 @@
     "node": "12.21.0"
   },
   "private": true,
-  "description": "necessary apis for my portfolio",
+  "description": "necessary api for my portfolio",
   "main": "app.js",
   "repository": "https://github.com/hkamalo/portfolio-api.git",
   "author": "Heranca <heranca.kamalo@gmail.com>",
