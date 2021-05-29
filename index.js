@@ -104,7 +104,7 @@ app.post('/contact', (req, res) => {
           from_email: `${process.env.MY_EMAIL_ADDRESS}`,
           to: [
             {
-              email: 'contact.pro@hkamalo.com',
+              email: `${email}`,
               type: 'to',
             },
           ],
@@ -140,9 +140,17 @@ app.post('/contact', (req, res) => {
       to: `${process.env.MY_EMAIL_ADDRESS}`,
       subject: 'Message portfolio',
       text: `Message laissé par : ${firstname} ${lastname}, de l'entreprise : ${company}, email: ${email}, ${message}`,
-      html: `<p>Message laissé par : ${firstname} ${lastname} de l'entreprise : ${company}</p> 
-    <p>email: ${email}</p> 
-    <p>${message}</p>`,
+      html: `
+      <div>
+      <h4>Prénom: </h4><p>${firstname}</p>
+      <h4>Nom: </h4> <p>${lastname}</p>
+      <h4>Entreprise: </h4> <p>${company}</p>
+      <h4>Email: </h4> <p>${email}</p>
+      </div>
+      <div>
+      <h4>Message: </h4> <p>${message}</p>
+      </div>
+      `,
     };
 
     portfolioContactCopy.sendMail(contactMessage, (err, info) => {
