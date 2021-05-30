@@ -71,7 +71,7 @@ process.on('beforeExit', () => {
 
 // ------Handle contact form-------- //
 
-app.post('https://portfolio-kamalo-back.herokuapp.com/contact', (req, res) => {
+app.post('/contact', (req, res) => {
   const { company, firstname, lastname, email, message } = req.body;
 
   // ------Check data are good-------- //
