@@ -16,12 +16,10 @@ const inTestEnv = getEnv('NODE_ENV') === 'test';
 
 // const PORT = getEnv(`PORT${inTestEnv ? '_TEST' : ''}`);
 
-
 module.exports = {
   getEnv,
   inTestEnv,
   inProdEnv,
   inDevEnv,
   // PORT,
-
 };

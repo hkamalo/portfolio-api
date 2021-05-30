@@ -6,7 +6,7 @@
 /* eslint-disable no-unused-vars */
 const express = require('express');
 const Joi = require('joi');
-const cors = require('cors');
+
 const nodemailer = require('nodemailer');
 // const connection = require('./db-config');
 const helmet = require('helmet');
@@ -34,7 +34,6 @@ app.use(helmet());
 // app settings
 // app.set('x-powered-by', false); // for security
 
-
 const allowedOrigins = process.env.CORS_ALLOWED_ORIGINS.split(',');
 // const corsOptions = {
 //   origin: (origin, callback) => {
@@ -47,7 +46,7 @@ const allowedOrigins = process.env.CORS_ALLOWED_ORIGINS.split(',');
 //   credentials: true,
 // };
 
-app.use(cors(allowedOrigins));
+// app.use(cors(allowedOrigins));
 
 // ------Server setup--------- //
 const port = process.env.PORT || 5001;
