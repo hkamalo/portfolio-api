@@ -4,7 +4,7 @@
 /* eslint-disable no-console */
 /* eslint-disable no-shadow */
 /* eslint-disable no-unused-vars */
-import cors from "cors";
+import cors from 'cors';
 
 const express = require('express');
 const Joi = require('joi');
@@ -48,7 +48,7 @@ const allowedOrigins = process.env.CORS_ALLOWED_ORIGINS.split(',');
 //   credentials: true,
 // };
 
-app.use(cors())
+app.use(cors());
 
 // ------Server setup--------- //
 const port = process.env.PORT || 5001;
