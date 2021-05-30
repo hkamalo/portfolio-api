@@ -19,7 +19,13 @@ const mailchimpClient = require('@mailchimp/mailchimp_transactional')(
 
 const app = express();
 app.use(express.json());
-app.use(helmet());
+app.use(
+  helmet.contentSecurityPolicy({
+    directives: {
+      defaultSrc: ["'self'"],
+    },
+  })
+);
 
 // ------Handle DB connection error--------- //
 
