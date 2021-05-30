@@ -6,12 +6,12 @@
 /* eslint-disable no-unused-vars */
 const express = require('express');
 const Joi = require('joi');
-const cors = require('cors');
+// const cors = require('cors');
 const nodemailer = require('nodemailer');
-const connection = require('./db-config');
+// const connection = require('./db-config');
 const helmet = require('helmet');
 require('dotenv').config();
-const { CORS_ALLOWED_ORIGINS } = require('./env');
+// const { CORS_ALLOWED_ORIGINS } = require('./env');
 const mailchimpClient = require('@mailchimp/mailchimp_transactional')(
   process.env.MAIL_CHIMP_API_KEY
 );
@@ -22,32 +22,32 @@ app.use(helmet());
 
 // ------Handle DB connection error--------- //
 
-connection.connect((err) => {
-  if (err) {
-    console.error(`error connecting: ${err.stack}`);
-  } else {
-    console.log(
-      `connected to database with threadId :  ${connection.threadId}`
-    );
-  }
-});
+// connection.connect((err) => {
+//   if (err) {
+//     console.error(`error connecting: ${err.stack}`);
+//   } else {
+//     console.log(
+//       `connected to database with threadId :  ${connection.threadId}`
+//     );
+//   }
+// });
 
 // app settings
 app.set('x-powered-by', false); // for security
 
-const allowedOrigins = CORS_ALLOWED_ORIGINS.split(',');
-const corsOptions = {
-  origin: (origin, callback) => {
-    if (origin === undefined || allowedOrigins.indexOf(origin) !== -1) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
-  credentials: true,
-};
+// const allowedOrigins = CORS_ALLOWED_ORIGINS.split(',');
+// const corsOptions = {
+//   origin: (origin, callback) => {
+//     if (origin === undefined || allowedOrigins.indexOf(origin) !== -1) {
+//       callback(null, true);
+//     } else {
+//       callback(new Error('Not allowed by CORS'));
+//     }
+//   },
+//   credentials: true,
+// };
 
-app.use(cors(corsOptions));
+// app.use(cors(corsOptions));
 
 // ------Server setup--------- //
 const port = process.env.PORT || 5001;
