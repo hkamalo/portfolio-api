@@ -4,7 +4,7 @@
 /* eslint-disable no-console */
 /* eslint-disable no-shadow */
 /* eslint-disable no-unused-vars */
-import cors from 'cors';
+const cors = require('cors');
 
 const express = require('express');
 const Joi = require('joi');
