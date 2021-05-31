@@ -146,6 +146,8 @@ app.post('/contact', (req, res) => {
       },
     });
 
+    console.log(portfolioContactCopy);
+
     console.log(emailPerso);
 
     const contactMessage = {
