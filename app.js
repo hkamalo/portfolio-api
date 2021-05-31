@@ -89,7 +89,7 @@ app.post('/contact', (req, res) => {
     firstname: Joi.string().min(2).max(100).required(),
     lastname: Joi.string().min(2).max(100).required(),
     message: Joi.string().min(2).required(),
-    email: Joi.string().min(2).max(255).required(),
+    email: Joi.string().email().min(2).max(255).required(),
   }).validate(
     { company, firstname, lastname, email, message },
     { abortEarly: false }
