@@ -163,7 +163,7 @@ app.post('/contact', (req, res) => {
       </div>
       `,
     };
-
+    console.log(contactMessage);
     portfolioContactCopy.sendMail(contactMessage, (err, info) => {
       if (err) {
         console.log(`Error occurred. ${err.contactMessage}`);
