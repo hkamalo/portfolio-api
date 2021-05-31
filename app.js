@@ -83,6 +83,7 @@ process.on('beforeExit', () => {
 app.post('/contact', (req, res) => {
   const { company, firstname, lastname, email, message } = req.body;
 
+  console.log(company, firstname, lastname, email, message);
   // ------Check data are good-------- //
   const { error } = Joi.object({
     company: Joi.string().min(2).max(255).required(),
