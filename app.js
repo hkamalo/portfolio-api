@@ -18,7 +18,7 @@ const mailchimpClient = require('@mailchimp/mailchimp_transactional')(
   process.env.MAIL_CHIMP_API_KEY
 );
 
-const emailPerso = process.env.MY_EMAIL_ADDRESS;
+const emailPerso = 'contact.pro@hkamalo.com';
 const app = express();
 app.use(express.json());
 app.use(
