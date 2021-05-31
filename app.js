@@ -13,10 +13,13 @@ const nodemailer = require('nodemailer');
 // const connection = require('./db-config');
 const helmet = require('helmet');
 require('dotenv').config();
+
+
 const mailchimpClient = require('@mailchimp/mailchimp_transactional')(
   process.env.MAIL_CHIMP_API_KEY
 );
 
+const emailPerso = process.env.MY_EMAIL_ADDRESS;
 const app = express();
 app.use(express.json());
 app.use(
@@ -87,7 +90,7 @@ app.post('/contact', (req, res) => {
     firstname: Joi.string().min(2).max(100).required(),
     lastname: Joi.string().min(2).max(100).required(),
     message: Joi.string().min(2).required(),
-    email: Joi.string().email().min(2).max(255).required(),
+    email: Joi.string().min(2).max(255).required(),
   }).validate(
     { company, firstname, lastname, email, message },
     { abortEarly: false }
@@ -108,22 +111,22 @@ app.post('/contact', (req, res) => {
           },
         ],
         message: {
-          subject: 'Confirmation de reception',
-          from_email: `${process.env.MY_EMAIL_ADDRESS}`,
-          to: [
+          "subject" : "Confirmation de reception",
+          "from_email" : `${email}`,
+         "to" : [
             {
-              email: `${email}`,
-              type: 'to',
+              "email": `${email}`,
+              "type": "to",
             },
           ],
-          global_merge_vars: [
+          "global_merge_vars": [
             {
-              name: 'fname',
-              content: `${firstname}`,
+              "name": "fname",
+              "content": `${firstname}`,
             },
           ],
 
-          signing_domain: 'www.hkamalo.com',
+          "signing_domain": "www.hkamalo.com",
         },
       });
       console.log(response);
