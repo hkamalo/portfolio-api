@@ -100,38 +100,38 @@ app.post('/contact', (req, res) => {
   if (error) {
     res.status(422).json({ validationErrors: error.details });
   } else {
-    const run = async () => {
-      const response = await mailchimpClient.messages.sendTemplate({
-        template_name: 'confirmation',
-        template_content: [
-          {
-            name: 'name',
-            content: `${firstname}`,
-          },
-        ],
-        message: {
-          subject: 'Confirmation de reception',
-          from_email: `${email}`,
-          to: [
-            {
-              email: `${email}`,
-              type: 'to',
-            },
-          ],
-          global_merge_vars: [
-            {
-              name: 'fname',
-              content: `${firstname}`,
-            },
-          ],
+    // const run = async () => {
+    //   const response = await mailchimpClient.messages.sendTemplate({
+    //     template_name: 'confirmation',
+    //     template_content: [
+    //       {
+    //         name: 'name',
+    //         content: `${firstname}`,
+    //       },
+    //     ],
+    //     message: {
+    //       subject: 'Confirmation de reception',
+    //       from_email: 'contact.pro@hkamalo.com',
+    //       to: [
+    //         {
+    //           email: `${email}`,
+    //           type: 'to',
+    //         },
+    //       ],
+    //       global_merge_vars: [
+    //         {
+    //           name: 'fname',
+    //           content: `${firstname}`,
+    //         },
+    //       ],
 
-          signing_domain: 'www.hkamalo.com',
-        },
-      });
-      console.log(response);
-    };
+    //       signing_domain: 'www.hkamalo.com',
+    //     },
+    //   });
+    //   console.log(response);
+    // };
 
-    run();
+    // run();
 
     // ------------Create a SMTP transporter object----------------------//
 
