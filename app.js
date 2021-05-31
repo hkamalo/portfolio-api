@@ -14,7 +14,6 @@ const nodemailer = require('nodemailer');
 const helmet = require('helmet');
 require('dotenv').config();
 
-
 const mailchimpClient = require('@mailchimp/mailchimp_transactional')(
   process.env.MAIL_CHIMP_API_KEY
 );
@@ -111,22 +110,22 @@ app.post('/contact', (req, res) => {
           },
         ],
         message: {
-          "subject" : "Confirmation de reception",
-          "from_email" : `${email}`,
-         "to" : [
+          subject: 'Confirmation de reception',
+          from_email: `${email}`,
+          to: [
             {
-              "email": `${email}`,
-              "type": "to",
+              email: `${email}`,
+              type: 'to',
             },
           ],
-          "global_merge_vars": [
+          global_merge_vars: [
             {
-              "name": "fname",
-              "content": `${firstname}`,
+              name: 'fname',
+              content: `${firstname}`,
             },
           ],
 
-          "signing_domain": "www.hkamalo.com",
+          signing_domain: 'www.hkamalo.com',
         },
       });
       console.log(response);
