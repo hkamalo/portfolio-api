@@ -146,11 +146,11 @@ app.post('/contact', (req, res) => {
     });
 
     const contactMessage = {
-      from: `${process.env.MY_EMAIL_ADDRESS}`,
-      to: `${process.env.MY_EMAIL_ADDRESS}`,
-      subject: 'Message portfolio',
-      text: `Message laissé par : ${firstname} ${lastname}, de l'entreprise : ${company}, email: ${email}, ${message}`,
-      html: `
+      "from": `${process.env.MY_EMAIL_ADDRESS}`,
+      "to": `${process.env.MY_EMAIL_ADDRESS}`,
+      "subject": 'Message portfolio',
+      "text": `Message laissé par : ${firstname} ${lastname}, de l'entreprise : ${company}, email: ${email}, ${message}`,
+      "html": `
       <div>
       <p><strong>Entreprise: </strong>${company}</p>
       <p><strong>Prénom: </strong>${firstname}</p>
