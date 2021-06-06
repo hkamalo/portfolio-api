@@ -43,7 +43,7 @@ app.use(
 // app settings
 // app.set('x-powered-by', false); // for security
 
-const allowedOrigins = process.env.CORS_ALLOWED_ORIGINS.split(',');
+const allowedOrigins = [process.env.ALLOWED_ORIGIN_HEROKU, process.env.ALLOWED_ORIGIN_PORTFOLIO]
 const corsOptions = {
   origin: (origin, callback) => {
     if (origin === undefined || allowedOrigins.indexOf(origin) !== -1) {
