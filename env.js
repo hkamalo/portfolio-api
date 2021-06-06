@@ -14,7 +14,6 @@ const inProdEnv = getEnv('NODE_ENV') === 'production';
 const inDevEnv = getEnv('NODE_ENV') === 'development';
 const inTestEnv = getEnv('NODE_ENV') === 'test';
 
-
 module.exports = {
   getEnv,
   inTestEnv,
