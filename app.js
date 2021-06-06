@@ -5,12 +5,9 @@
 /* eslint-disable no-shadow */
 /* eslint-disable no-unused-vars */
 const cors = require('cors');
-
 const express = require('express');
 const Joi = require('joi');
-
 const nodemailer = require('nodemailer');
-// const connection = require('./db-config');
 const helmet = require('helmet');
 require('dotenv').config();
 
@@ -27,21 +24,6 @@ app.use(
     },
   })
 );
-
-// ------Handle DB connection error--------- //
-
-// connection.connect((err) => {
-//   if (err) {
-//     console.error(`error connecting: ${err.stack}`);
-//   } else {
-//     console.log(
-//       `connected to database with threadId :  ${connection.threadId}`
-//     );
-//   }
-// });
-
-// app settings
-// app.set('x-powered-by', false); // for security
 
 const allowedOrigins = [
   process.env.ALLOWED_ORIGIN_HEROKU,
@@ -86,6 +68,7 @@ app.post('/contact', (req, res) => {
   const { company, firstname, lastname, email, message } = req.body;
 
   console.log(company, firstname, lastname, email, message);
+  
   // ------Check data are good-------- //
   const { error } = Joi.object({
     company: Joi.string().min(2).max(255).required(),
