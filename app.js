@@ -18,7 +18,6 @@ const mailchimpClient = require('@mailchimp/mailchimp_transactional')(
   process.env.MAIL_CHIMP_API_KEY
 );
 
-const emailPerso = 'contact.pro@hkamalo.com';
 const app = express();
 app.use(express.json());
 app.use(
@@ -44,19 +43,19 @@ app.use(
 // app settings
 // app.set('x-powered-by', false); // for security
 
-// const allowedOrigins = process.env.CORS_ALLOWED_ORIGINS.split(',');
-// const corsOptions = {
-//   origin: (origin, callback) => {
-//     if (origin === undefined || allowedOrigins.indexOf(origin) !== -1) {
-//       callback(null, true);
-//     } else {
-//       callback(new Error('Not allowed by CORS'));
-//     }
-//   },
-//   credentials: true,
-// };
+const allowedOrigins = process.env.CORS_ALLOWED_ORIGINS.split(',');
+const corsOptions = {
+  origin: (origin, callback) => {
+    if (origin === undefined || allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true,
+};
 
-app.use(cors());
+app.use(cors(corsOptions));
 
 // ------Server setup--------- //
 const port = process.env.PORT || 5001;
@@ -101,38 +100,38 @@ app.post('/contact', (req, res) => {
   if (error) {
     res.status(422).json({ validationErrors: error.details });
   } else {
-    // const run = async () => {
-    //   const response = await mailchimpClient.messages.sendTemplate({
-    //     template_name: 'confirmation',
-    //     template_content: [
-    //       {
-    //         name: 'name',
-    //         content: `${firstname}`,
-    //       },
-    //     ],
-    //     message: {
-    //       subject: 'Confirmation de reception',
-    //       from_email: 'contact.pro@hkamalo.com',
-    //       to: [
-    //         {
-    //           email: `${email}`,
-    //           type: 'to',
-    //         },
-    //       ],
-    //       global_merge_vars: [
-    //         {
-    //           name: 'fname',
-    //           content: `${firstname}`,
-    //         },
-    //       ],
+    const run = async () => {
+      const response = await mailchimpClient.messages.sendTemplate({
+        template_name: 'confirmation',
+        template_content: [
+          {
+            name: 'name',
+            content: `${firstname}`,
+          },
+        ],
+        message: {
+          subject: 'Confirmation de reception',
+          from_email: `${process.env.MY_EMAIL_ADDRESS}`,
+          to: [
+            {
+              email: `${email}`,
+              type: 'to',
+            },
+          ],
+          global_merge_vars: [
+            {
+              name: 'fname',
+              content: `${firstname}`,
+            },
+          ],
 
-    //       signing_domain: 'www.hkamalo.com',
-    //     },
-    //   });
-    //   console.log(response);
-    // };
+          signing_domain: 'www.hkamalo.com',
+        },
+      });
+      console.log(response);
+    };
 
-    // run();
+    run();
 
     // ------------Create a SMTP transporter object----------------------//
 
@@ -147,8 +146,8 @@ app.post('/contact', (req, res) => {
     });
 
     const contactMessage = {
-      from: `${emailPerso}`,
-      to: `${emailPerso}`,
+      from: `${process.env.MY_EMAIL_ADDRESS}`,
+      to: `${process.env.MY_EMAIL_ADDRESS}`,
       subject: 'Message portfolio',
       text: `Message laissé par : ${firstname} ${lastname}, de l'entreprise : ${company}, email: ${email}, ${message}`,
       html: `
